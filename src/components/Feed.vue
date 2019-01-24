@@ -57,12 +57,10 @@ export default {
     if (items) {
       this.items = JSON.parse(items);
     }
-    let lastRefresh = localStorage.getItem(`rss::${this.feed}::lastrefresh`);
-    const refreshMinutes = 15 * 60 * 1000; // 15 minutes
-    const aWhileAgo = new Date().getTime() - refreshMinutes;
-    if (!lastRefresh || lastRefresh < aWhileAgo) {
-      this.refreshFeed();
-    }
+    this.refreshIfItsBeenAWhile();
+    this.setTimeout(() => {
+      this.refreshIfItsBeenAWhile();
+    }, 15 * 60 * 1000);
   },
   data() {
     return {
@@ -71,6 +69,14 @@ export default {
     };
   },
   methods: {
+    refreshIfItsBeenAWhile() {
+      let lastRefresh = localStorage.getItem(`rss::${this.feed}::lastrefresh`);
+      const refreshMinutes = 15 * 60 * 1000; // 15 minutes
+      const aWhileAgo = new Date().getTime() - refreshMinutes;
+      if (!lastRefresh || lastRefresh < aWhileAgo) {
+        this.refreshFeed();
+      }
+    },
     strippedUrl(url) {
       var urlParts = url
         .replace("http://", "")
