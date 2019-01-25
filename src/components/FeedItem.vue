@@ -25,6 +25,19 @@
           class="text-grey no-underline mr-2 hover:text-grey-light"
           :href="metaData.link"
         >{{ metaData.title }}</a>
+        <sortable-handle>
+          <svg
+            class="ml-2 h-4 w-4 cursor-move text-grey hover:text-grey-darkest"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M14 4h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM8 4h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm6 6h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm-6 0h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm6 6h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1zm-6 0h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1z"
+            ></path>
+          </svg>
+        </sortable-handle>
       </span>
     </h1>
     <ul class="list-reset">
@@ -54,14 +67,17 @@
 <script>
 let Parser = require("rss-parser");
 let parser = new Parser();
+import SortableHandle from "./SortableHandle";
 
 export default {
   props: ["feed"],
+  components: {
+    SortableHandle
+  },
   mounted() {
     let feed = localStorage.getItem(`rss::${this.feed}`);
     if (feed) {
       feed = JSON.parse(feed);
-      console.log(feed);
       this.items = feed.items.slice(0, 10);
       this.metaData = {
         title: feed.title,

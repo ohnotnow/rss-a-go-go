@@ -9,6 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@shopify/draggable": "^1.0.0-beta.8",
     "axios": "^0.18.0",
     "rss-parser": "^3.6.2",
     "tailwindcss": "^0.7.4",

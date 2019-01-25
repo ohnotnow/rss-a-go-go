@@ -19,17 +19,27 @@
       </form>
     </div>
 
-    <feed-list :feeds="feeds" @remove="deleteFeed"></feed-list>
+    <sortable-list v-model="feeds">
+      <div slot-scope="{ items }" class="container mx-auto grid pt-8">
+        <sortable-item v-for="feed in items" :key="feed">
+          <feed-item :feed="feed" @remove="deleteFeed"/>
+        </sortable-item>
+      </div>
+    </sortable-list>
   </div>
 </template>
 
 <script>
-import FeedList from "./components/FeedList.vue";
+import SortableList from "./components/SortableList";
+import SortableItem from "./components/SortableItem";
+import FeedItem from "./components/FeedItem";
 
 export default {
   name: "app",
   components: {
-    FeedList
+    SortableList,
+    SortableItem,
+    FeedItem
   },
   mounted() {
     const cachedFeeds = localStorage.getItem("rss::feeds");
@@ -53,7 +63,9 @@ export default {
       if (!this.newFeedUrl) {
         return;
       }
-      this.feeds.push(this.newFeedUrl);
+      const newFeeds = [...this.feeds];
+      newFeeds.push(this.newFeedUrl.trim());
+      this.feeds = [...new Set(newFeeds)]; // make sure the array is distinct values
       this.newFeedUrl = "";
     },
     deleteFeed(feed) {
