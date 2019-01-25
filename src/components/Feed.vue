@@ -20,12 +20,15 @@
           ></path>
         </svg>
       </button>
-      <span>{{ strippedUrl(feed) }}</span>
+      <span>
+        {{ strippedUrl(feed) }}
+        <span class="text-sm text-grey-lighter">{{ remainingUrl(feed) }}</span>
+      </span>
     </h1>
     <ul class="list-reset">
       <li v-for="item in items" :key="item.link" class="mb-4">
         <a
-          class="text-grey text-xl no-underline hover:text-grey-light"
+          class="text-grey text-xl no-underline hover:text-grey-light visited:text-grey-dark"
           :href="item.link"
         >{{ item.title }}</a>
         <div class="text-grey-dark font-light text-sm opacity-70">{{ item.pubDate }}</div>
@@ -83,6 +86,14 @@ export default {
         .replace("https://", "")
         .split(/[/?#]/);
       return urlParts[0];
+    },
+    remainingUrl(url) {
+      var urlParts = url
+        .replace(/http[s]*:\/\//, "")
+        .replace(/\.*rss.*/, "")
+        .split(/[/?#]/)
+        .filter(part => part);
+      return urlParts.slice(1).join(" - ");
     },
     async refreshFeed() {
       const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
