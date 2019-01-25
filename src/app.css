@@ -23,3 +23,17 @@
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
+
+.spin {
+  transition: all 0.5s;
+  animation: roll 3s infinite;
+  transform: rotate(360deg)
+}
+@keyframes roll {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

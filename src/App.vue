@@ -19,7 +19,7 @@
       </form>
     </div>
 
-    <feed-list :feeds="feeds"></feed-list>
+    <feed-list :feeds="feeds" @remove="deleteFeed"></feed-list>
   </div>
 </template>
 
@@ -31,22 +31,21 @@ export default {
   components: {
     FeedList
   },
+  mounted() {
+    const cachedFeeds = localStorage.getItem("rss::feeds");
+    if (cachedFeeds) {
+      this.feeds = JSON.parse(cachedFeeds);
+    }
+  },
+  watch: {
+    feeds() {
+      localStorage.setItem("rss::feeds", JSON.stringify(this.feeds));
+    }
+  },
   data() {
     return {
       newFeedUrl: "",
-      feeds: [
-        "http://feeds.bbci.co.uk/news/rss.xml",
-        "https://www.reddit.com/r/glasgow/.rss",
-        "https://www.reddit.com/r/PHP/.rss"
-        // "https://www.google.com/2",
-        // "https://www.google.com/3",
-        // "https://www.google.com/4",
-        // "https://www.google.com/5",
-        // "https://www.google.com/6",
-        // "https://www.google.com/7",
-        // "https://www.google.com/8",
-        // "https://www.google.com/9"
-      ]
+      feeds: ["http://feeds.bbci.co.uk/news/rss.xml"]
     };
   },
   methods: {
@@ -56,6 +55,9 @@ export default {
       }
       this.feeds.push(this.newFeedUrl);
       this.newFeedUrl = "";
+    },
+    deleteFeed(feed) {
+      this.feeds = this.feeds.filter(iFeed => iFeed != feed);
     }
   }
 };

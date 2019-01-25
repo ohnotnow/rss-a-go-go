@@ -5,12 +5,12 @@
         class="text-white"
         @click="refreshFeed"
         :disabled="refreshing"
-        :class="{ 'opacity-50': refreshing }"
+        :class="{ 'opacity-50 spin': refreshing }"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          class="w-8 mr-4"
+          class="w-8 h-8"
           fill="currentColor"
         >
           <circle cx="12" cy="12" r="10" class="primary"></circle>
@@ -20,9 +20,11 @@
           ></path>
         </svg>
       </button>
-      <span>
-        {{ strippedUrl(feed) }}
-        <span class="text-sm text-grey-lighter">{{ remainingUrl(feed) }}</span>
+      <span class="ml-4">
+        <a
+          class="text-grey no-underline mr-2 hover:text-grey-light"
+          :href="metaData.link"
+        >{{ metaData.title }}</a>
       </span>
     </h1>
     <ul class="list-reset">
@@ -34,7 +36,7 @@
         <div class="text-grey-dark font-light text-sm opacity-70">{{ item.pubDate }}</div>
       </li>
     </ul>
-    <button class="absolute pin-r pin-b">
+    <button class="absolute pin-r pin-b" title="Delete" @click="deleteFeed(feed)">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="icon-trash w-8 mr-2">
         <path
           class="primary"
@@ -56,19 +58,29 @@ let parser = new Parser();
 export default {
   props: ["feed"],
   mounted() {
-    let items = localStorage.getItem(`rss::${this.feed}`);
-    if (items) {
-      this.items = JSON.parse(items);
+    let feed = localStorage.getItem(`rss::${this.feed}`);
+    if (feed) {
+      feed = JSON.parse(feed);
+      console.log(feed);
+      this.items = feed.items.slice(0, 10);
+      this.metaData = {
+        title: feed.title,
+        link: feed.link
+      };
     }
     this.refreshIfItsBeenAWhile();
-    this.setTimeout(() => {
+    setTimeout(() => {
       this.refreshIfItsBeenAWhile();
     }, 15 * 60 * 1000);
   },
   data() {
     return {
       refreshing: false,
-      items: []
+      items: [],
+      metaData: {
+        title: "",
+        link: ""
+      }
     };
   },
   methods: {
@@ -80,30 +92,20 @@ export default {
         this.refreshFeed();
       }
     },
-    strippedUrl(url) {
-      var urlParts = url
-        .replace("http://", "")
-        .replace("https://", "")
-        .split(/[/?#]/);
-      return urlParts[0];
-    },
-    remainingUrl(url) {
-      var urlParts = url
-        .replace(/http[s]*:\/\//, "")
-        .replace(/\.*rss.*/, "")
-        .split(/[/?#]/)
-        .filter(part => part);
-      return urlParts.slice(1).join(" - ");
-    },
     async refreshFeed() {
       const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
       this.refreshing = true;
       const feed = await parser.parseURL(CORS_PROXY + this.feed);
       this.items = feed.items.slice(0, 10);
+      this.metaData.title = feed.title;
+      this.metaData.link = feed.link;
       this.refreshing = false;
-      localStorage.setItem(`rss::${this.feed}`, JSON.stringify(this.items));
+      localStorage.setItem(`rss::${this.feed}`, JSON.stringify(feed));
       const now = new Date().getTime();
       localStorage.setItem(`rss::${this.feed}::lastrefresh`, now);
+    },
+    deleteFeed(feed) {
+      this.$emit("remove", feed);
     }
   }
 };
