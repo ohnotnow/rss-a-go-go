@@ -9,6 +9,16 @@ multiple people could use the same install I guess.
 
 Just dump the contents of the `dist/` folder onto your server and visit the URL.
 
+## Via docker
+
+In your terminal just run :
+```
+docker build -t rss-a-go-go .
+docker run -p 8080:8080 rss-a-go-go
+```
+
+Once it's up you should be able to access http://localhost:8080 .
+
 ## Local project setup
 ```
 yarn install
@@ -24,7 +34,7 @@ yarn run serve
 yarn run build
 ```
 
-### Run your tests
+### Run your tests (no, not really...)
 ```
 yarn run test
 ```
@@ -34,10 +44,7 @@ yarn run test
 yarn run lint
 ```
 
-### Run your unit tests
+### Run your unit tests (pfft)
 ```
 yarn run test:unit
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
