@@ -1,6 +1,7 @@
 <template>
   <div class="border border-black p-4 shadow-md bg-grey-darkest relative">
     <h1 class="mb-4 opacity-50 flex items-start">
+      <span class="bg-black"></span>
       <button
         class="text-white"
         @click="refreshFeed"

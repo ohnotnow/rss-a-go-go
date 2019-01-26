@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="bg-black font-sans">
     <div class="px-4">
       <form class="w-full max-w-sm mx-auto">
         <div class="flex items-center border-b border-b-2 border-grey-darkest py-2">

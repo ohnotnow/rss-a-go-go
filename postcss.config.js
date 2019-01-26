@@ -8,7 +8,7 @@ module.exports = {
     postcssImport,
     tailwindcss("./tailwind.js"),
     purgecss({
-      content: ['./src/**/*.vue'],
+      content: ['./src/*.vue', './src/**/*.vue'],
       extractors: [
         {
             extractor: class TailwindExtractor {
